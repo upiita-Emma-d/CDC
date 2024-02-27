@@ -9,7 +9,7 @@ from openpyxl.styles import Alignment, Border, Side, Font
 from openpyxl.utils import get_column_letter
 from openpyxl import Workbook
 
-fuente_general = Font(name='Eras Medium ITC', italic=False,size=11)
+fuente_general = Font(name='Century', italic=False,size=11)
 
 def calculate_polygon_area(coordinates):
     n = len(coordinates)
@@ -31,6 +31,13 @@ def calculate_bearing(point1, point2):
     bearing = (angle_deg + 360) % 360
     return bearing
 
+def decimal_to_dms(decimal_degrees):
+    degrees = int(decimal_degrees)
+    minutes_full = (decimal_degrees - degrees) * 60
+    minutes = int(minutes_full)
+    seconds = (minutes_full - minutes) * 60
+    return (degrees, minutes, seconds)
+
 def calculate_rumbo(bearing):
     """
     Convert a bearing angle in degrees to the traditional surveying notation.
@@ -39,13 +46,17 @@ def calculate_rumbo(bearing):
     :return: Bearing in the surveying format.
     """
     if 0 <= bearing < 90:
-        return f"N {90-bearing:.5f}° E"
+            d, m, s = decimal_to_dms(90 - bearing)
+            return f"N {d:02d}°{m:02d}'{s:05.2f}\" E"
     elif 90 <= bearing < 180:
-        return f"N {- 90 + bearing:.5f}° W"
+        d, m, s = decimal_to_dms(bearing - 90)
+        return f"N {d:02d}°{m:02d}'{s:05.2f}\" W"
     elif 180 <= bearing < 270:
-        return f"S {270 - bearing:.5f}° W"
+        d, m, s = decimal_to_dms(270 - bearing)
+        return f"S {d:02d}°{m:02d}'{s:05.2f}\" W"
     elif 270 <= bearing < 360:
-        return f"S {-270 + bearing:.5f}° E"
+        d, m, s = decimal_to_dms(bearing - 270)
+        return f"S {d:02d}°{m:02d}'{s:05.2f}\" E"
     else:
         raise ValueError("Bearing must be between 0 and 360 degrees.")
 
@@ -59,28 +70,28 @@ def save_to_excel(records, excel_output_path):
     title_cell = ws.cell(row=1, column=1)
     title_cell.value = "CUADRO DE CONSTRUCCION"
     title_cell.alignment = Alignment(horizontal='center', vertical='center')
-    title_cell.font = Font(name='Eras Medium ITC', size=16, bold=False, italic=False)
+    title_cell.font = Font(name='Century', size=16, bold=False, italic=False)
 
     # Add LADO
     ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=2)
     title_cell = ws.cell(row=2, column=1)
     title_cell.value = "LADO"
     title_cell.alignment = Alignment(horizontal='center', vertical='center')
-    title_cell.font = Font(name='Eras Medium ITC', size=11, bold=False, italic=False)
+    title_cell.font = Font(name='Century', size=11, bold=False, italic=False)
 
     # Add EST
     # ws.merge_cells(start_row=2, start_column=7, end_row=2, end_column=8)
     title_cell = ws.cell(row=3, column=1)
     title_cell.value = "EST"
     title_cell.alignment = Alignment(horizontal='center', vertical='center')
-    title_cell.font = Font(name='Eras Medium ITC', size=11, bold=False, italic=False)
+    title_cell.font = Font(name='Century', size=11, bold=False, italic=False)
 
     # Add PV
     # ws.merge_cells(start_row=2, start_column=7, end_row=2, end_column=8)
     title_cell = ws.cell(row=3, column=2)
     title_cell.value = "PV"
     title_cell.alignment = Alignment(horizontal='center', vertical='center')
-    title_cell.font = Font(name='Eras Medium ITC',size=11, bold=False, italic=False)
+    title_cell.font = Font(name='Century',size=11, bold=False, italic=False)
 
 
     # Add RUMBO
@@ -88,42 +99,42 @@ def save_to_excel(records, excel_output_path):
     title_cell = ws.cell(row=2, column=3)
     title_cell.value = "RUMBO"
     title_cell.alignment = Alignment(horizontal='center', vertical='center')
-    title_cell.font = Font(name='Eras Medium ITC', size=11, bold=False, italic=False)
+    title_cell.font = Font(name='Century', size=11, bold=False, italic=False)
 
     # Add DISTANCIA
     ws.merge_cells(start_row=2, start_column=4, end_row=3, end_column=4)
     title_cell = ws.cell(row=2, column=4)
     title_cell.value = "DISTANCIA"
     title_cell.alignment = Alignment(horizontal='center', vertical='center')
-    title_cell.font = Font(name='Eras Medium ITC', size=11, bold=False, italic=False)
+    title_cell.font = Font(name='Century', size=11, bold=False, italic=False)
 
     # Add V t
     # ws.merge_cells(start_row=2, start_column=3, end_row=3, end_column=3)
     title_cell = ws.cell(row=2, column=5)
     title_cell.value = "V"
     title_cell.alignment = Alignment(horizontal='center', vertical='center')
-    title_cell.font = Font(name='Eras Medium ITC', size=11, bold=True, italic=False)
+    title_cell.font = Font(name='Century', size=11, bold=True, italic=False)
 
     # Add V t
     ws.merge_cells(start_row=2, start_column=5, end_row=3, end_column=5)
     title_cell = ws.cell(row=2, column=5)
     title_cell.value = "V"
     title_cell.alignment = Alignment(horizontal='center', vertical='center')
-    title_cell.font = Font(name='Eras Medium ITC', size=11, bold=True, italic=False)
+    title_cell.font = Font(name='Century', size=11, bold=True, italic=False)
 
     # Add COORDENADAS
     ws.merge_cells(start_row=2, start_column=6, end_row=2, end_column=7)
     title_cell = ws.cell(row=2, column=6)
     title_cell.value = "COORDENADAS"
     title_cell.alignment = Alignment(horizontal='center', vertical='center')
-    title_cell.font = Font(name='Eras Medium ITC', size=11, bold=True, italic=False)
+    title_cell.font = Font(name='Century', size=11, bold=True, italic=False)
 
     # Add X title
     # ws.merge_cells(start_row=2, start_column=7, end_row=2, end_column=8)
     title_cell = ws.cell(row=3, column=6)
     title_cell.value = "X"
     title_cell.alignment = Alignment(horizontal='center', vertical='center')
-    title_cell.font = Font(name='Eras Medium ITC', size=11, bold=True, italic=False)
+    title_cell.font = Font(name='Century', size=11, bold=True, italic=False)
 
 
     # Add Y title
@@ -131,7 +142,7 @@ def save_to_excel(records, excel_output_path):
     title_cell = ws.cell(row=3, column=7)
     title_cell.value = "Y"
     title_cell.alignment = Alignment(horizontal='center', vertical='center')
-    title_cell.font = Font(name='Eras Medium ITC', size=11, bold=True, italic=False)
+    title_cell.font = Font(name='Century', size=11, bold=True, italic=False)
 
 
     # Add records to the Excel sheet
@@ -170,7 +181,7 @@ def save_to_excel(records, excel_output_path):
     superfaces_total = ws.cell(row=ws.max_row, column=ws.min_column)
     superfaces_total.value = f"SUPERFICIE {area} m2"
     superfaces_total.alignment = Alignment(horizontal='center', vertical='center')
-    superfaces_total.font = Font(name='Eras Medium ITC', size=14, bold=False)
+    superfaces_total.font = Font(name='Century', size=14, bold=False)
     altura_deseada = 30 
     ws.row_dimensions[ws.max_row].height = altura_deseada
     # Apply styles to all cells
@@ -249,14 +260,14 @@ def save_to_excel(records, excel_output_path):
 def process_shapefile(shapefile_path):
     sf = shapefile.Reader(shapefile_path)
     all_points = [shape.points[0] for shape in sf.shapes()]
-
+    print([i for i in all_points])
     records = []
     record_init = {
         "EST": "",
         "PV": "",
         "RUMBO": "",
         "DISTANCIA": "",
-        "V": 1,
+        "V": "1",
         "X": all_points[0][0] if all_points[0] is not None else "",
         "Y": all_points[0][1] if all_points[0] is not None else "",
     }
@@ -266,13 +277,13 @@ def process_shapefile(shapefile_path):
         distance = calculate_distance(point1, point2)
         bearing = calculate_bearing(point1, point2)
         rumbo = calculate_rumbo(bearing)
-        lat1, lon1 = point1[1], point1[0]
+        lat1, lon1 = point2[1], point2[0]
         record = {
-            "EST": i + 1, # or whatever value is appropriate for 'EST'
-            "PV": i + 2, # or whatever value is appropriate for 'PV'
+            "EST": f"{i + 1}", # or whatever value is appropriate for 'EST'
+            "PV": f"{i + 2}", # or whatever value is appropriate for 'PV'
             "RUMBO": rumbo,
             "DISTANCIA": distance,
-            "V": i + 2, # or the appropriate value for 'V'
+            "V": f"{i + 2}", # or the appropriate value for 'V'
             "X": lon1,
             "Y": lat1
         }
@@ -281,13 +292,13 @@ def process_shapefile(shapefile_path):
     distance = calculate_distance(point1, point2)
     bearing = calculate_bearing(point1, point2)
     rumbo = calculate_rumbo(bearing)
-    lat1, lon1 = point1[1], point1[0]
+    lat1, lon1 = point2[1], point2[0]
     record_end = {
-        "EST": len(all_points),
-        "PV": 1,
+        "EST": f"{len(all_points)}",
+        "PV": "1",
         "RUMBO": rumbo,
         "DISTANCIA": distance,
-        "V": 1,
+        "V": "1",
         "X": lon1,
         "Y": lat1
     }
